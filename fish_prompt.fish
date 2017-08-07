@@ -52,6 +52,20 @@
 #     and command hg stat > /dev/null ^&1
 # end
 
+function __bobthefish_prompt_aws_profile -S -d 'Display current $AWS_PROFILE'
+  [ "$theme_display_aws_profile" = 'no' ]; and return
+  __bobthefish_aws_profile
+end
+
+function __bobthefish_aws_profile -S -d 'Get the current $AWS_PROFILE'
+  [ "$AWS_PROFILE" = '' ]; and return
+
+  set -l aws_profile "$AWS_PROFILE"
+
+  __bobthefish_start_segment $__color_aws_profile
+  echo -ns $__bobthefish_aws_profile_glyph $aws_profile ' '
+end
+
 function __bobthefish_git_branch -S -d 'Get the current git branch (or commitish)'
   set -l ref (command git symbolic-ref HEAD ^/dev/null)
     and string replace 'refs/heads/' "$__bobthefish_branch_glyph " $ref
@@ -805,6 +819,9 @@ function __bobthefish_maybe_display_colors -S
   __bobthefish_start_segment $__color_virtualfish
   echo -ns color_virtualfish ' '
   __bobthefish_finish_segments
+  __bobthefish_start_segment $__color_aws_profile
+  echo -n color_aws_profile ' '
+  __bobthefish_finish_segments
   echo -e "\n"
 
 end
@@ -838,6 +855,8 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
   set -l __bobthefish_pypy_glyph              \u1D56
 
   set -l __bobthefish_ruby_glyph              ''
+
+  set -l __bobthefish_aws_profile_glyph       ''
 
   # Vagrant glyphs
   set -l __bobthefish_vagrant_running_glyph   \u2191 # ↑ 'running'
@@ -873,8 +892,9 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
     set __bobthefish_detached_glyph   \uF417
     set __bobthefish_tag_glyph        \uF412
 
-    set __bobthefish_virtualenv_glyph \uE73C ' '
-    set __bobthefish_ruby_glyph       \uE791 ' '
+    set __bobthefish_virtualenv_glyph    \uE73C ' '
+    set __bobthefish_ruby_glyph          \uE791 ' '
+    set __bobthefish_aws_profile_glyph   \uE7AD ' '
 
     set __bobthefish_vagrant_running_glyph  \uF431 # ↑ 'running'
     set __bobthefish_vagrant_poweroff_glyph \uF433 # ↓ 'poweroff'
@@ -956,6 +976,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 white black
       set __color_rvm                      brmagenta $colorfg --bold
       set __color_virtualfish              brblue $colorfg --bold
+      set __color_aws_profile              bryellow $colorfg --bold
 
     case 'terminal-light*'
       set -l colorfg white
@@ -982,6 +1003,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 black white
       set __color_rvm                      brmagenta $colorfg --bold
       set __color_virtualfish              brblue $colorfg --bold
+      set __color_aws_profile              bryellow $colorfg --bold
 
     case 'terminal2' 'terminal2-dark*'
       set -l colorfg black
@@ -1008,6 +1030,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 brgrey white
       set __color_rvm                      brmagenta $colorfg --bold
       set __color_virtualfish              brblue $colorfg --bold
+      set __color_aws_profile              bryellow $colorfg --bold
 
     case 'terminal2-light*'
       set -l colorfg white
@@ -1034,6 +1057,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 grey black
       set __color_rvm                      brmagenta $colorfg --bold
       set __color_virtualfish              brblue $colorfg --bold
+      set __color_aws_profile              bryellow $colorfg --bold
 
     case 'zenburn'
       set -l grey   333333 # a bit darker than normal zenburn grey
@@ -1066,6 +1090,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 $grey $blue
       set __color_rvm                      $red $grey --bold
       set __color_virtualfish              $blue $grey --bold
+      set __color_aws_profile              $yellow $grey --bold
 
     case 'base16-light'
       set -l base00 181818
@@ -1109,6 +1134,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 $base02 $base0D
       set __color_rvm                      $base08 $colorfg --bold
       set __color_virtualfish              $base0D $colorfg --bold
+      set __color_aws_profile              $base0A $colorfg --bold
 
     case 'base16' 'base16-dark'
       set -l base00 181818
@@ -1152,6 +1178,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 $base02 $base0D
       set __color_rvm                      $base08 $colorfg --bold
       set __color_virtualfish              $base0D $colorfg --bold
+      set __color_aws_profile              $base0A $colorfg --bold
 
     case 'solarized-light'
       set -l base03  002b36
@@ -1195,6 +1222,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 $base2 $blue
       set __color_rvm                      $red $colorfg --bold
       set __color_virtualfish              $cyan $colorfg --bold
+      set __color_aws_profile              $yellow $colorfg --bold
 
     case 'solarized' 'solarized-dark'
       set -l base03  002b36
@@ -1238,6 +1266,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 $base02 $blue
       set __color_rvm                      $red $colorfg --bold
       set __color_virtualfish              $cyan $colorfg --bold
+      set __color_aws_profile              $yellow $colorfg --bold
 
     case 'light'
       #               light  medium dark
@@ -1274,6 +1303,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 $grey[1] $blue[3]
       set __color_rvm                      $ruby_red $grey[1] --bold
       set __color_virtualfish              $blue[2] $grey[1] --bold
+      set __color_aws_profile              $yellow[1] $grey[1] --bold
 
     case 'gruvbox'
       #               light  medium  dark  darkest
@@ -1309,6 +1339,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set -g __color_username              $fg[3] $blue[2]
       set -g __color_rvm                   $red[2] $fg[2] --bold
       set -g __color_virtualfish           $blue[2] $fg[2] --bold
+      set -g __color_aws_profile           $yellow[2] $fg[2] --bold
 
     case '*' # default dark theme
       #               light  medium dark
@@ -1345,6 +1376,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
       set __color_username                 $grey[1] $blue[3]
       set __color_rvm                      $ruby_red $grey[1] --bold
       set __color_virtualfish              $blue[2] $grey[1] --bold
+      set __color_aws_profile              $yellow[2] $grey[1] --bold
   end
 
   # Start each line with a blank slate
@@ -1359,6 +1391,7 @@ function fish_prompt -d 'bobthefish, a fish theme optimized for awesome'
   __bobthefish_prompt_user
   __bobthefish_prompt_rubies
   __bobthefish_prompt_virtualfish
+  __bobthefish_prompt_aws_profile
 
   set -l git_root (__bobthefish_git_project_dir)
   set -l hg_root  (__bobthefish_hg_project_dir)
