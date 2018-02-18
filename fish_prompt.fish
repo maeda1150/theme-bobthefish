@@ -52,15 +52,15 @@
 #     and command hg stat > /dev/null ^&1
 # end
 
-function __bobthefish_prompt_aws_profile -S -d 'Display current $AWS_PROFILE'
+function __bobthefish_prompt_aws_profile -S -d 'Display current $AWS_DEFAULT_PROFILE'
   [ "$theme_display_aws_profile" = 'no' ]; and return
   __bobthefish_aws_profile
 end
 
-function __bobthefish_aws_profile -S -d 'Get the current $AWS_PROFILE'
-  [ "$AWS_PROFILE" = '' ]; and return
+function __bobthefish_aws_profile -S -d 'Get the current $AWS_DEFAULT_PROFILE'
+  [ "$AWS_DEFAULT_PROFILE" = '' ]; and return
 
-  set -l aws_profile "$AWS_PROFILE"
+  set -l aws_profile "$AWS_DEFAULT_PROFILE"
 
   __bobthefish_start_segment $__color_aws_profile
   echo -ns $__bobthefish_aws_profile_glyph $aws_profile ' '
